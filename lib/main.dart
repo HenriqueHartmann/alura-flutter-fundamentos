@@ -1,16 +1,36 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(const BytebankApp());
+void main() => runApp(BytebankApp());
 
 class BytebankApp extends StatelessWidget {
-  const BytebankApp({Key? key}) : super(key: key);
+  BytebankApp({Key? key}) : super(key: key);
+
+  final ThemeData theme = ThemeData();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Scaffold(
-        body: ListaTransferencia(),
+      theme: theme.copyWith(
+        colorScheme: theme.colorScheme.copyWith(
+          primary: Colors.green[900],
+          secondary: Colors.blueAccent[700],
+        ),
+      // theme: ThemeData(
+      //   colorScheme: ColorScheme.fromSwatch(
+      //     primarySwatch: Colors.green,
+      //   ).copyWith(
+      //     secondary: Colors.blueAccent[700],
+      //   ), Utilizado pela Alura
+        elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              primary: Colors.blueAccent[700],
+            )
+        ),
+        buttonTheme: ButtonThemeData(
+            buttonColor: Colors.blueAccent[700],
+            textTheme: ButtonTextTheme.primary ),
       ),
+    home: ListaTransferencia(),
     );
   }
 }
@@ -121,7 +141,6 @@ class ListaTransferenciaState extends State<ListaTransferencia> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Transferências'),
-        backgroundColor: Colors.green,
       ),
       body: ListView.builder(
         itemCount: widget._transferencias.length,
@@ -138,7 +157,7 @@ class ListaTransferenciaState extends State<ListaTransferencia> {
             return const FormularioTransferencia();
           }));
           future.then((transferenciaRecebida) {
-            Future.delayed(Duration(seconds: 1), () {
+            Future.delayed(const Duration(seconds: 1), () {
               debugPrint('$transferenciaRecebida');
               if (transferenciaRecebida != null) {
                 setState(() => widget._transferencias.add(transferenciaRecebida));

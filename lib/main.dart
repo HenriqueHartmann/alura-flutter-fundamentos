@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const BytebankApp());
-}
+void main() => runApp(const BytebankApp());
 
 class BytebankApp extends StatelessWidget {
   const BytebankApp({Key? key}) : super(key: key);
@@ -94,18 +92,21 @@ class Editor extends StatelessWidget {
   }
 }
 
-class ListaTransferencia extends StatelessWidget {
+class ListaTransferencia extends StatefulWidget {
   ListaTransferencia({Key? key}) : super(key: key);
 
-  final List<Transferencia> _transferencias = List.empty(growable: true); // Ou []
+  final List<Transferencia> _transferencias = []; // Or List.empty(growable: true);
 
   @override
-  Widget build(BuildContext context) {
-    _transferencias.add(Transferencia(100.0, 1000));
-    _transferencias.add(Transferencia(100.0, 1000));
-    _transferencias.add(Transferencia(100.0, 1000));
-    _transferencias.add(Transferencia(100.0, 1000));
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return ListaTransferenciaState();
+  }
+}
 
+class ListaTransferenciaState extends State<ListaTransferencia> {
+  @override
+  Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
@@ -113,14 +114,15 @@ class ListaTransferencia extends StatelessWidget {
         backgroundColor: Colors.green,
       ),
       body: ListView.builder(
-        itemCount: _transferencias.length,
+        itemCount: widget._transferencias.length,
         itemBuilder: (context, indice) {
-          final transferencia = _transferencias[indice];
+          final transferencia = widget._transferencias[indice];
 
           return ItemTransferencia(transferencia);
         },
       ),
       floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
         onPressed: () {
           final Future<Transferencia?> future = Navigator.push(context, MaterialPageRoute(builder: (context) {
             return FormularioTransferencia();
@@ -128,11 +130,12 @@ class ListaTransferencia extends StatelessWidget {
           future.then((transferenciaRecebida) {
             debugPrint('$transferenciaRecebida');
             if (transferenciaRecebida != null) {
-              _transferencias.add(transferenciaRecebida);
+              setState(() {
+                widget._transferencias.add(transferenciaRecebida);
+              });
             }
           });
         },
-        child: const Icon(Icons.add),
       ),
     );
   }

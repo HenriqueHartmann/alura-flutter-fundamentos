@@ -15,35 +15,45 @@ class BytebankApp extends StatelessWidget {
   }
 }
 
-class FormularioTransferencia extends StatelessWidget {
-  FormularioTransferencia({Key? key}) : super(key: key);
+class FormularioTransferencia extends StatefulWidget {
+  const FormularioTransferencia({Key? key}) : super(key: key);
 
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    return FormularioTransferenciaState();
+  }
+}
+
+class FormularioTransferenciaState extends State<FormularioTransferencia> {
   final TextEditingController _controladorCampoNumeroConta = TextEditingController();
   final TextEditingController _controladorCampoValor = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Criando Transferencia')),
-      body: Column(
-        children: <Widget>[
-          Editor(
-              controlador: _controladorCampoNumeroConta,
-              rotulo: 'Número da conta:',
-              dica: '0000'
+        appBar: AppBar(title: const Text('Criando Transferencia')),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Editor(
+                  controlador: _controladorCampoNumeroConta,
+                  rotulo: 'Número da conta:',
+                  dica: '0000'
+              ),
+              Editor(
+                  controlador: _controladorCampoValor,
+                  rotulo: 'Valor',
+                  dica: '0.00',
+                  icone: Icons.monetization_on
+              ),
+              ElevatedButton(
+                child: const Text("Confirmar"),
+                onPressed: () => _criaTransferencia(context),
+              ),
+            ],
           ),
-          Editor(
-            controlador: _controladorCampoValor,
-            rotulo: 'Valor',
-            dica: '0.00',
-            icone: Icons.monetization_on
-          ),
-          ElevatedButton(
-            child: const Text("Confirmar"),
-            onPressed: () => _criaTransferencia(context),
-          ),
-        ],
-      )
+        )
     );
   }
 
@@ -125,15 +135,15 @@ class ListaTransferenciaState extends State<ListaTransferencia> {
         child: const Icon(Icons.add),
         onPressed: () {
           final Future<Transferencia?> future = Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return FormularioTransferencia();
+            return const FormularioTransferencia();
           }));
           future.then((transferenciaRecebida) {
-            debugPrint('$transferenciaRecebida');
-            if (transferenciaRecebida != null) {
-              setState(() {
-                widget._transferencias.add(transferenciaRecebida);
-              });
-            }
+            Future.delayed(Duration(seconds: 1), () {
+              debugPrint('$transferenciaRecebida');
+              if (transferenciaRecebida != null) {
+                setState(() => widget._transferencias.add(transferenciaRecebida));
+              }
+            });
           });
         },
       ),

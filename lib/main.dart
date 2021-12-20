@@ -9,7 +9,7 @@ class BytebankApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       home: Scaffold(
         body: ListaTransferencia(),
       ),
@@ -95,22 +95,30 @@ class Editor extends StatelessWidget {
 }
 
 class ListaTransferencia extends StatelessWidget {
-  const ListaTransferencia({Key? key}) : super(key: key);
+  ListaTransferencia({Key? key}) : super(key: key);
+
+  final List<Transferencia> _transferencias = List.empty(growable: true); // Ou []
 
   @override
   Widget build(BuildContext context) {
+    _transferencias.add(Transferencia(100.0, 1000));
+    _transferencias.add(Transferencia(100.0, 1000));
+    _transferencias.add(Transferencia(100.0, 1000));
+    _transferencias.add(Transferencia(100.0, 1000));
+
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
         title: const Text('Transferências'),
         backgroundColor: Colors.green,
       ),
-      body: Column(
-        children: <Widget>[
-          ItemTransferencia(Transferencia(100.0, 1000)),
-          ItemTransferencia(Transferencia(200.0, 2000)),
-          ItemTransferencia(Transferencia(300.0, 3000)),
-        ],
+      body: ListView.builder(
+        itemCount: _transferencias.length,
+        itemBuilder: (context, indice) {
+          final transferencia = _transferencias[indice];
+
+          return ItemTransferencia(transferencia);
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -119,6 +127,9 @@ class ListaTransferencia extends StatelessWidget {
           }));
           future.then((transferenciaRecebida) {
             debugPrint('$transferenciaRecebida');
+            if (transferenciaRecebida != null) {
+              _transferencias.add(transferenciaRecebida);
+            }
           });
         },
         child: const Icon(Icons.add),
